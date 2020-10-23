@@ -9,17 +9,32 @@
         android:id="@+id/nav_home"
         android:name="xyz.goshanchik.prodavayka.view.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_nav_home_to_nav_info"
+            app:destination="@id/nav_info" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_cart"
+            app:destination="@id/nav_cart" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_cart"
-        android:name="xyz.goshanchik.prodavayka.view.GalleryFragment"
+        android:name="xyz.goshanchik.prodavayka.view.CartFragment"
         android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_cart" >
+        <action
+            android:id="@+id/action_nav_cart_to_nav_info"
+            app:destination="@id/nav_info" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_info"
-        android:name="xyz.goshanchik.prodavayka.view.SlideshowFragment"
+        android:name="xyz.goshanchik.prodavayka.view.AboutAppFragment"
         android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_slideshow" >
+        <action
+            android:id="@+id/action_nav_info_to_nav_cart"
+            app:destination="@id/nav_cart" />
+    </fragment>
 </navigation>

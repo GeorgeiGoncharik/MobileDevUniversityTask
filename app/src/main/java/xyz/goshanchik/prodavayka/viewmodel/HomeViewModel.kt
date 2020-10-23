@@ -3,21 +3,50 @@ package xyz.goshanchik.prodavayka.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import xyz.goshanchik.prodavayka.data.CategoryRepository
-import xyz.goshanchik.prodavayka.data.CommerceRoomDatabase
-import xyz.goshanchik.prodavayka.data.dao.CategoryDao
-import xyz.goshanchik.prodavayka.model.Category
+import kotlinx.coroutines.launch
+import timber.log.Timber
+import xyz.goshanchik.prodavayka.data.Repository
+import xyz.goshanchik.prodavayka.data.database.CommerceRoomDatabase
+import xyz.goshanchik.prodavayka.util.NetManager
+import java.time.LocalDateTime
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val categoryDao: CategoryDao
-    private val categoryRepository: CategoryRepository
-    val categories: LiveData<List<Category>>
+    private val repository: Repository =
+        Repository(CommerceRoomDatabase.getDatabase(application, viewModelScope), NetManager(application))
+
+
+    private val _refreshed: MutableLiveData<LocalDateTime> = MutableLiveData(LocalDateTime.now())
+    val refreshed: LiveData<LocalDateTime>
+        get() = _refreshed
 
     init {
-        categoryDao = CommerceRoomDatabase.getDatabase(application, viewModelScope).categoryDao()
-        categoryRepository = CategoryRepository(categoryDao)
-        categories = categoryRepository.allCategories
+        //        refreshDataFromRepository()
+    }
+
+    val categories = repository.allCategories
+
+    val recents = repository.allRecents
+
+    private val _navigate = MutableLiveData<Int?>()
+    val navigate: LiveData<Int?>
+        get() = _navigate
+
+    fun navigateCategoryActivity(categoryId: Int){
+        _navigate.value = categoryId
+    }
+
+    fun onNavigateCategoryActivity(){
+        _navigate.value = null
+    }
+
+
+    fun refreshDataFromRepository() {
+        viewModelScope.launch {
+            repository.refreshCategories()
+            _refreshed.postValue(LocalDateTime.now())
+        }
     }
 }

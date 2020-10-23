@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import xyz.goshanchik.prodavayka.databinding.CategoryItemBinding
-import xyz.goshanchik.prodavayka.model.Category
+import xyz.goshanchik.prodavayka.databinding.ItemCategoryBinding
+import xyz.goshanchik.prodavayka.data.domain.Category
 import xyz.goshanchik.prodavayka.util.GlideApp
 
 class CategoryListAdapter(private val context: Context, private val listener: CategoryListener) : ListAdapter<Category, CategoryListAdapter.ViewHolder>(CategoryDiffCallback()) {
 
-    class ViewHolder private constructor (private val binding: CategoryItemBinding): RecyclerView.ViewHolder(binding.root){
+    class ViewHolder private constructor (private val binding: ItemCategoryBinding): RecyclerView.ViewHolder(binding.root){
 
         fun bind(listener: CategoryListener, item: Category, context: Context) {
             itemView.setOnClickListener { listener.onClick(item) }
@@ -26,7 +26,7 @@ class CategoryListAdapter(private val context: Context, private val listener: Ca
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = CategoryItemBinding.inflate(layoutInflater, parent, false)
+                val binding = ItemCategoryBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
         }

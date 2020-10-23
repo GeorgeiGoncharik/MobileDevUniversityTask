@@ -12,4 +12,9 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="cart">Cart</string>
     <string name="menu_about">About</string>
+    <string name="preference_cart">cart_file</string>
+    <string name="next">next</string>
+    <string name="prev">prev</string>
+    <string name="add_to_cart">add to cart</string>
+    <string name="about">About</string>
 </resources>
