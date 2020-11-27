@@ -49,22 +49,32 @@ class HomeFragment : Fragment() {
         binding.swiperefresh.setOnRefreshListener {
             Timber.i("onRefresh called from SwipeRefreshLayout")
             homeViewModel.refreshDataFromRepository()
+            binding.swiperefresh.isRefreshing = false
         }
 
         binding.recycler.apply {
-
             layoutManager = LinearLayoutManager(requireActivity())
-
             adapter = categoryAdapter
         }
 
         binding.recyclerRecentlySeen.apply {
             layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
-
             adapter = recentsAdapter
         }
 
-        homeViewModel.categories.observe(viewLifecycleOwner, {
+        subscribeUi()
+
+        return binding.root
+    }
+
+    private fun subscribeUi() {
+
+//        homeViewModel.categories.observe(viewLifecycleOwner, {
+//            categoryAdapter.submitList(it)
+//        })
+
+//        Flow
+        homeViewModel.categoriesFromFlow.observe(viewLifecycleOwner, {
             categoryAdapter.submitList(it)
         })
 
@@ -92,11 +102,5 @@ class HomeFragment : Fragment() {
             }
 
         }
-
-        homeViewModel.refreshed.observe(viewLifecycleOwner){
-            binding.swiperefresh.isRefreshing = false
-        }
-
-        return binding.root
     }
 }

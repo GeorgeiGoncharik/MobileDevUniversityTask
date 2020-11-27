@@ -15,7 +15,9 @@
         android:theme="@style/AppTheme"
         android:name=".ApplicationDelegate"
         android:usesCleartextTraffic="true">
-        <activity android:name=".CategoryActivity" />
+        <activity
+            android:name=".CategoryActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

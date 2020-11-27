@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 import xyz.goshanchik.prodavayka.R
+import xyz.goshanchik.prodavayka.WORK_OFFER_EMPTY_OUTPUT
+import xyz.goshanchik.prodavayka.WORK_OFFER_OUTPUT
 import xyz.goshanchik.prodavayka.adapter.ProductListAdapter
 import xyz.goshanchik.prodavayka.adapter.ProductListener
 import xyz.goshanchik.prodavayka.databinding.FragmentCategoryBinding
@@ -50,6 +52,7 @@ class CategoryFragment : Fragment() {
         binding.swiperefresh.setOnRefreshListener {
             Timber.i("onRefresh called from SwipeRefreshLayout")
             sharedViewModel.refreshDataFromRepository()
+            binding.swiperefresh.isRefreshing = false
         }
 
         val touchHelperCallback: ItemTouchHelper.SimpleCallback =
@@ -67,7 +70,6 @@ class CategoryFragment : Fragment() {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     val item = productListAdapter.getProductAt(viewHolder.position)
                     Timber.d("add to cart: id - ${item.id} name - ${item.name}")
-
                     sharedViewModel.onProductItemAddToCart(item)
                     productListAdapter.notifyItemChanged(viewHolder.position)
                 }
@@ -99,18 +101,6 @@ class CategoryFragment : Fragment() {
                     val iconBottom = iconTop + icon.intrinsicHeight
 
                     when {
-//                        dX > 0 -> { // Swiping to the right
-//                            val iconLeft =
-//                                itemView.left + iconMargin
-//                            val iconRight =
-//                                itemView.left + iconMargin + icon.intrinsicWidth
-//                            icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-//                            background.setBounds(
-//                                itemView.left, itemView.top,
-//                                itemView.left + dX.toInt() + backgroundCornerOffset,
-//                                itemView.bottom
-//                            )
-//                        }
                         dX < 0 -> { // Swiping to the left
                             val iconLeft = itemView.right - iconMargin - icon.intrinsicWidth
                             val iconRight = itemView.right - iconMargin
@@ -162,9 +152,17 @@ class CategoryFragment : Fragment() {
             }
         }
 
-        sharedViewModel.refreshed.observe(viewLifecycleOwner){
-            binding.swiperefresh.isRefreshing = false
-        }
+//        sharedViewModel.outputWorkInfos.observe(viewLifecycleOwner){
+//            it?.let {
+//                val workInfo = it.first()
+//                if(workInfo.state.isFinished){
+//                    val output = workInfo.outputData.getLong(WORK_OFFER_OUTPUT, WORK_OFFER_EMPTY_OUTPUT)
+//                    if(output != WORK_OFFER_EMPTY_OUTPUT){
+//                        sharedViewModel.onNavigateToProductItemDetail(output)
+//                    }
+//                }
+//            }
+//        }
 
         return binding.root
     }

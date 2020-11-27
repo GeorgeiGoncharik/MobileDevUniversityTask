@@ -1,9 +1,7 @@
 package xyz.goshanchik.prodavayka.data.database
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,10 +9,9 @@ import kotlinx.coroutines.launch
 import xyz.goshanchik.prodavayka.data.database.dao.CartDao
 import xyz.goshanchik.prodavayka.data.database.dao.CategoryDao
 import xyz.goshanchik.prodavayka.data.database.dao.ProductDao
-import xyz.goshanchik.prodavayka.data.domain.Category
-import xyz.goshanchik.prodavayka.data.domain.Product
 
-@Database(entities = [DatabaseCategory::class, DatabaseProduct::class], version = 1, exportSchema = false)
+@Database(entities = [DatabaseCategory::class, DatabaseProduct::class, DatabaseCartItem::class], version = 1, exportSchema = false)
+@TypeConverters(OffsetDateTimeConverter::class)
 abstract class CommerceRoomDatabase: RoomDatabase() {
 
     abstract fun categoryDao(): CategoryDao
@@ -28,8 +25,7 @@ abstract class CommerceRoomDatabase: RoomDatabase() {
         private var INSTANCE: CommerceRoomDatabase? = null
 
         fun getDatabase(
-            context: Context,
-            scope: CoroutineScope
+            context: Context
         ): CommerceRoomDatabase {
             val tempInstance = INSTANCE
             if (tempInstance != null) {

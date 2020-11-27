@@ -21,8 +21,8 @@
     <fragment
         android:id="@+id/nav_cart"
         android:name="xyz.goshanchik.prodavayka.view.CartFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_cart" >
+        android:label="@string/menu_cart"
+        tools:layout="@layout/fragment_cart">
         <action
             android:id="@+id/action_nav_cart_to_nav_info"
             app:destination="@id/nav_info" />
@@ -31,8 +31,8 @@
     <fragment
         android:id="@+id/nav_info"
         android:name="xyz.goshanchik.prodavayka.view.AboutAppFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" >
+        android:label="@string/menu_info"
+        tools:layout="@layout/fragment_slideshow">
         <action
             android:id="@+id/action_nav_info_to_nav_cart"
             app:destination="@id/nav_cart" />

@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
+//        val fab: FloatingActionButton = findViewById(R.id.fab)
 
 //        Нормальный код
 
@@ -53,18 +53,18 @@ class MainActivity : AppCompatActivity() {
 
 //        Java-style, но задание лабы конкретное
 
-        fab.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View) {
-                Timber.d("Called custom OnClick method implementation for FAB.")
-                mp.start()
-
-                val navController = findNavController(R.id.nav_host_fragment)
-                when(navController.currentDestination!!.id){
-                    R.id.nav_home -> navController.navigate(HomeFragmentDirections.actionNavHomeToNavCart())
-                    R.id.nav_info -> navController.navigate(AboutAppFragmentDirections.actionNavInfoToNavCart())
-                }
-            }
-        })
+//        fab.setOnClickListener(object : View.OnClickListener {
+//            override fun onClick(v: View) {
+//                Timber.d("Called custom OnClick method implementation for FAB.")
+//                mp.start()
+//
+//                val navController = findNavController(R.id.nav_host_fragment)
+//                when(navController.currentDestination!!.id){
+//                    R.id.nav_home -> navController.navigate(HomeFragmentDirections.actionNavHomeToNavCart())
+//                    R.id.nav_info -> navController.navigate(AboutAppFragmentDirections.actionNavInfoToNavCart())
+//                }
+//            }
+//        })
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)

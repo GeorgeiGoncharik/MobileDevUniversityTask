@@ -2,34 +2,41 @@ package xyz.goshanchik.prodavayka.data.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import xyz.goshanchik.prodavayka.data.database.DatabaseCategory
 import xyz.goshanchik.prodavayka.data.database.DatabaseCategoryWithProducts
 
 @Dao
 interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCategories(vararg categories: DatabaseCategory): List<Long>
+    suspend fun insertCategories(vararg categories: DatabaseCategory): List<Long>
 
-    @Update
-    fun updateCategories(vararg categories: DatabaseCategory)
+    @Query("UPDATE categories SET name = :name, description = :description, picture_url =:pictureUrl WHERE id = :id")
+    suspend fun updateCategory(id: Int, name: String, description: String, pictureUrl: String)
 
     @Delete
-    fun deleteCategories(vararg categories: DatabaseCategory)
+    suspend fun deleteCategories(vararg categories: DatabaseCategory)
 
-    @Query("SELECT * FROM Categories")
-    fun getAllCategories(): LiveData<List<DatabaseCategory>>
+    @Query("SELECT * FROM categories")
+    fun getAllCategoriesLiveData(): LiveData<List<DatabaseCategory>>
 
-    @Query("SELECT * FROM Categories WHERE id=:categoryId")
-    fun getCategory(categoryId: Int): LiveData<DatabaseCategory>
+    @Query("SELECT * FROM categories")
+    fun getAllCategoryFlow(): Flow<List<DatabaseCategory>>
+
+    @Query("SELECT * FROM categories")
+    suspend fun getAllCategories(): List<DatabaseCategory>
+
+    @Query("SELECT * FROM categories WHERE id=:categoryId")
+    suspend fun getCategory(categoryId: Int): DatabaseCategory
 
     @Transaction
-    @Query("SELECT * FROM Categories")
+    @Query("SELECT * FROM categories")
     fun getCategoriesWithProducts(): LiveData<List<DatabaseCategoryWithProducts>>
 
     @Transaction
-    @Query("SELECT * FROM Categories WHERE id=:categoryId")
+    @Query("SELECT * FROM categories WHERE id=:categoryId")
     fun getCategoryWithProducts(categoryId: Int): LiveData<DatabaseCategoryWithProducts>
 
-    @Query("DELETE FROM Categories")
+    @Query("DELETE FROM categories")
     fun deleteAll()
 }

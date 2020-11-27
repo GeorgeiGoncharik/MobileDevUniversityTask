@@ -1,6 +1,7 @@
 package xyz.goshanchik.prodavayka
 
 import android.app.Application
+import com.jakewharton.threetenabp.AndroidThreeTen
 import timber.log.Timber
 
 class ApplicationDelegate: Application() {
@@ -9,8 +10,8 @@ class ApplicationDelegate: Application() {
         super.onCreate()
 
         Timber.plant(Timber.DebugTree())
+        AndroidThreeTen.init(this)
 
-
-        //        applicationContext.deleteDatabase("commerce_database")
+        // applicationContext.deleteDatabase("commerce_database")
     }
 }

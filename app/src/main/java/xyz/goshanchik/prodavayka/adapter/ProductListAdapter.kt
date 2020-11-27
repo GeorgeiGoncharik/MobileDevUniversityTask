@@ -12,7 +12,7 @@ class ProductListAdapter(val listener: ProductListener): ListAdapter<Product, Pr
 
     inner class ViewHolder(private val binding: ItemProductBinding): RecyclerView.ViewHolder(binding.root){
 
-        fun bind(listener: ProductListener, product: Product) {
+        fun bind(product: Product) {
             binding.product = product
             binding.listener = listener
             binding.executePendingBindings()
@@ -26,7 +26,7 @@ class ProductListAdapter(val listener: ProductListener): ListAdapter<Product, Pr
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(listener, getItem(position))
+        holder.bind(getItem(position))
     }
 
     fun getProductAt(position: Int): Product {

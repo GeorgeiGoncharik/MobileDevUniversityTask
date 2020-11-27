@@ -23,8 +23,6 @@ class ProductFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedCategoryProductViewModel::class.java)
-
-
         mScaleGestureDetector = ScaleGestureDetector(requireActivity(), ScaleListener())
     }
 
@@ -44,7 +42,9 @@ class ProductFragment : Fragment() {
                     binding.root,
                     it,
                     Snackbar.LENGTH_SHORT
-                ).show()
+                )
+                    .setAnchorView(binding.toCartButton)
+                    .show()
 
                 sharedViewModel.resetShowSnackBar()
             }

@@ -2,32 +2,34 @@ package xyz.goshanchik.prodavayka.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.*
+import androidx.work.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import xyz.goshanchik.prodavayka.WORK_OFFER_TAG
 import xyz.goshanchik.prodavayka.data.Repository
 import xyz.goshanchik.prodavayka.data.database.CommerceRoomDatabase
 import xyz.goshanchik.prodavayka.data.domain.Category
 import xyz.goshanchik.prodavayka.data.domain.Product
 import xyz.goshanchik.prodavayka.util.NetManager
+import xyz.goshanchik.prodavayka.workers.OfferWorker
+import java.time.Duration
 import java.time.LocalDateTime
 
 
-class SharedCategoryProductViewModel(private val categoryId: Int, application: Application) : AndroidViewModel(
+class SharedCategoryProductViewModel(private val categoryId: Int, private val productId: Long, application: Application) : AndroidViewModel(
     application
 ) {
-    private val TAG = "offer_work"
+    private val repository = Repository(CommerceRoomDatabase.getDatabase(application), NetManager(application))
 
-    private val repository = Repository(CommerceRoomDatabase.getDatabase(application, viewModelScope), NetManager(application))
-
-    private val _refreshed: MutableLiveData<LocalDateTime> = MutableLiveData(LocalDateTime.now())
-    val refreshed: LiveData<LocalDateTime>
-        get() = _refreshed
+    val outputWorkInfos: LiveData<List<WorkInfo>>
 
     init {
         refreshDataFromRepository()
     }
+
+    private val workManager = WorkManager.getInstance(application)
 
     val categoryWithProducts = repository.getCategoryWithProducts(categoryId)
 
@@ -37,9 +39,38 @@ class SharedCategoryProductViewModel(private val categoryId: Int, application: A
 
     val currentCategory: LiveData<Category> = Transformations.map(categoryWithProducts) {it.category}
 
-    private val _navigateDetailPage = MutableLiveData<Boolean>(false)
+    private val _navigateDetailPage = MutableLiveData(false)
     val navigateDetailPage: LiveData<Boolean>
         get() = _navigateDetailPage
+
+    init {
+        if(productId == -1L){
+            val request = getOfferWorkRequest()
+            workManager.enqueue(request)
+            Timber.d("work has been enqueued1.")
+        }
+        else{
+            onNavigateToProductItemDetail(productId)
+        }
+        outputWorkInfos = workManager.getWorkInfosByTagLiveData(WORK_OFFER_TAG)
+    }
+
+//    private fun getOfferWorkRequest(): WorkRequest = PeriodicWorkRequestBuilder<OfferWorker>(Duration.ofMinutes(10))
+//            .addTag(WORK_OFFER_TAG)
+//            .setConstraints(Constraints.Builder()
+//                .setRequiresBatteryNotLow(true)
+//                .setRequiredNetworkType(NetworkType.CONNECTED)
+//                .build())
+//            .build()
+
+    private fun getOfferWorkRequest(): WorkRequest = OneTimeWorkRequestBuilder<OfferWorker>()
+        .addTag(WORK_OFFER_TAG)
+        .setConstraints(Constraints.Builder()
+//            .setRequiresBatteryNotLow(true)
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build())
+        .build()
+
 
     fun onNavigateToProductItemDetail(id: Long){
         val product = categoryWithProducts.value?.products?.firstOrNull { it.id == id } ?: throw Exception(
@@ -99,7 +130,7 @@ class SharedCategoryProductViewModel(private val categoryId: Int, application: A
         viewModelScope.launch {
             repository.addItemToCart(product)
             withContext(Dispatchers.Main){
-                _showSnackBar.postValue("${product.name} added to the Cart!")
+                _showSnackBar.postValue("${product.id} ${product.name} added to the Cart!")
             }
         }
     }
@@ -111,7 +142,6 @@ class SharedCategoryProductViewModel(private val categoryId: Int, application: A
     fun refreshDataFromRepository() {
         viewModelScope.launch {
             repository.refreshProducts(categoryId)
-            _refreshed.postValue(LocalDateTime.now())
         }
     }
 

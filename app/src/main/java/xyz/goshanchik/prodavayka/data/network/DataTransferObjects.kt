@@ -2,6 +2,7 @@ package xyz.goshanchik.prodavayka.data.network
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import org.threeten.bp.OffsetDateTime
 import xyz.goshanchik.prodavayka.data.database.DatabaseCategory
 import xyz.goshanchik.prodavayka.data.database.DatabaseProduct
 
@@ -33,6 +34,14 @@ data class NetworkProduct(
     val pictureUrl: String
 )
 
+fun NetworkCategory.asDatabaseModel(): DatabaseCategory =
+    DatabaseCategory(
+        id = this.id.toInt(),
+        name = this.name,
+        description = this.description,
+        pictureUrl = this.pictureUrl
+    )
+
 fun NetworkCategoryContainer.asDatabaseModel(): List<DatabaseCategory> {
     return categories.map{
         DatabaseCategory(
@@ -44,18 +53,38 @@ fun NetworkCategoryContainer.asDatabaseModel(): List<DatabaseCategory> {
     }
 }
 
+fun NetworkProduct.asDatabaseModel(recent: OffsetDateTime? = null): DatabaseProduct {
+    val discount = when(val raw = (this.discount.toFloat() % 100).toInt()){
+        in 70..101 -> 0
+        else -> raw
+    }.toFloat()
+
+    return DatabaseProduct(
+        id = this.id.toLong(),
+        name = this.name,
+        price = this.price.toFloat(),
+        discount = discount,
+        description = this.description,
+        categoryId = this.categoryId.toInt(),
+        pictureUrl = this.pictureUrl,
+        recent = recent
+    )
+}
+
+
 fun NetworkProductContainer.asDatabaseModel(): List<DatabaseProduct> {
     return products.map {
 
         val discount = when(val raw = (it.discount.toFloat() % 100).toInt()){
-            in 70..100 -> 0
+            in 70..101 -> 0
             else -> raw
-        }
+        }.toFloat()
+
         DatabaseProduct(
             id = it.id.toLong(),
             name = it.name,
             price = it.price.toFloat(),
-            discount = discount.toFloat(),
+            discount = discount,
             description = it.description,
             categoryId = it.categoryId.toInt(),
             pictureUrl = it.pictureUrl

@@ -1,76 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <data>
+        <variable
+            name="item"
+            type="xyz.goshanchik.prodavayka.data.domain.CartItem" />
+        <variable
+            name="increaseListener"
+            type="xyz.goshanchik.prodavayka.adapter.CartItemListener" />
+        <variable
+            name="decreaseListener"
+            type="xyz.goshanchik.prodavayka.adapter.CartItemListener" />
+        <variable
+            name="deleteListener"
+            type="xyz.goshanchik.prodavayka.adapter.CartItemListener" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="160dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginVertical="18dp"
+        app:cardCornerRadius="18dp"
+        app:cardElevation="3dp"
+        app:cardMaxElevation="8dp">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.4" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline4"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_launcher_background" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/photo_guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.35" />
 
-        <TextView
-            android:id="@+id/product_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/rubik_bold"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Dell Vostro 5471" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/buttons_guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.88" />
 
-        <TextView
-            android:id="@+id/category_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:textColor="@color/colorPrimary"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toBottomOf="@+id/product_name"
-            tools:text="Laptops" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/buttons_up_guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.10" />
 
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/buttons_down_guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.9" />
 
-        <Button
-            android:id="@+id/button5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:text="-"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toBottomOf="@+id/category_name" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/center_guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.50" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.google.android.material.card.MaterialCardView>
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/delete_button_guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.05" />
+
+            <ImageView
+                android:id="@+id/cart_product_image"
+                imageUrl="@{item.product.pictureUrl}"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="4dp"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toTopOf="@+id/buttons_down_guideline"
+                app:layout_constraintEnd_toStartOf="@+id/photo_guideline"
+                app:layout_constraintStart_toStartOf="@+id/delete_button_guideline"
+                app:layout_constraintTop_toTopOf="@+id/buttons_up_guideline"
+                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+            <TextView
+                android:id="@+id/cart_product_name"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="@{item.product.name}"
+                android:fontFamily="@font/rubik_bold"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:layout_constraintBottom_toTopOf="@+id/cart_item_category_name"
+                app:layout_constraintEnd_toStartOf="@+id/buttons_guideline"
+                app:layout_constraintStart_toStartOf="@+id/photo_guideline"
+                app:layout_constraintTop_toTopOf="@+id/buttons_up_guideline"
+                tools:text="Converse x OPI Chuck Tailor" />
+
+            <TextView
+                android:id="@+id/cart_item_category_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{item.category.name}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:fontFamily="@font/rubik_regular"
+                app:layout_constraintBottom_toTopOf="@+id/center_guideline"
+                app:layout_constraintEnd_toStartOf="@+id/buttons_guideline"
+                app:layout_constraintStart_toStartOf="@+id/photo_guideline"
+                tools:text="Snickers" />
+
+            <TextView
+                android:id="@+id/cart_item_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{Float.toString((float)item.quantity * item.product.fullPrice)}"
+                android:fontFamily="@font/rubik_bold"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:layout_constraintBottom_toTopOf="@+id/buttons_down_guideline"
+                app:layout_constraintEnd_toStartOf="@+id/buttons_guideline"
+                app:layout_constraintStart_toStartOf="@+id/photo_guideline"
+                tools:text="$ 259" />
+
+
+            <TextView
+                android:id="@+id/cart_item_quantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/rubik_regular"
+                android:text="@{Integer.toString(item.quantity)}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                app:layout_constraintBottom_toTopOf="@+id/buttons_down_guideline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/buttons_guideline"
+                app:layout_constraintTop_toTopOf="@+id/buttons_up_guideline"
+                tools:text="1" />
+
+            <Button
+                android:id="@+id/button_plus_quantity"
+                style="@style/IconOnlyButton"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:onClick="@{() -> increaseListener.onClick(item)}"
+                app:icon="@drawable/ic_baseline_add_24"
+                app:layout_constraintBottom_toTopOf="@+id/cart_item_quantity"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/buttons_guideline"
+                app:layout_constraintTop_toTopOf="@+id/buttons_up_guideline" />
+
+            <Button
+                android:id="@+id/button_minus_quantity"
+                style="@style/IconOnlyButton"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:onClick="@{() -> decreaseListener.onClick(item)}"
+                app:icon="@drawable/ic_baseline_remove_24"
+                app:layout_constraintBottom_toTopOf="@+id/buttons_down_guideline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/buttons_guideline"
+                app:layout_constraintTop_toBottomOf="@+id/cart_item_quantity" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

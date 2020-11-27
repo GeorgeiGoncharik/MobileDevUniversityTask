@@ -14,7 +14,8 @@ import kotlin.math.min
 
 class CategoryActivity : AppCompatActivity() {
 
-    var categoryId = 0
+    var categoryId: Int = 0
+    var productId: Long = 0
     lateinit var sharedViewModel: SharedCategoryProductViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,10 +25,11 @@ class CategoryActivity : AppCompatActivity() {
         setContentView(R.layout.activity_category)
 
         categoryId = intent.getIntExtra("category_id", -1)
+        productId = intent.getLongExtra("product_id", -1)
 
         sharedViewModel = ViewModelProvider(
             this,
-            SharedCategoryProductViewModelFactory(categoryId, application)
+            SharedCategoryProductViewModelFactory(categoryId, productId, application)
         )
             .get(SharedCategoryProductViewModel::class.java)
     }

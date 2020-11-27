@@ -2,34 +2,43 @@ package xyz.goshanchik.prodavayka.data.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import xyz.goshanchik.prodavayka.data.database.DatabaseProduct
+import xyz.goshanchik.prodavayka.data.database.DomainCartItem
 
 @Dao
 interface ProductDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertProducts(vararg Products: DatabaseProduct): List<Long>
+    suspend fun insertProducts(vararg Products: DatabaseProduct): List<Long>
 
     @Update
-    fun updateProducts(vararg Products: DatabaseProduct)
+    suspend fun updateProducts(vararg Products: DatabaseProduct)
 
     @Delete
-    fun deleteProducts(vararg Products: DatabaseProduct)
+    suspend fun deleteProducts(vararg Products: DatabaseProduct)
 
-    @Query("SELECT * FROM Products")
-    fun getAllProducts(): LiveData<List<DatabaseProduct>>
+    @Query("SELECT * FROM products WHERE category_id=:categoryId")
+    fun getProductsLiveData(categoryId: Int): LiveData<List<DatabaseProduct>>
 
-    @Query("SELECT * FROM Products WHERE category_id=:categoryId")
-    fun getProducts(categoryId: Int): LiveData<List<DatabaseProduct>>
+    @Query("SELECT * FROM products WHERE category_id=:categoryId")
+    fun getProductsFlow(categoryId: Int): Flow<List<DatabaseProduct>>
 
-    @Query("SELECT * FROM Products WHERE id=:ProductId")
-    fun getProduct(ProductId: Long): LiveData<DatabaseProduct>
+    @Query("SELECT * FROM products WHERE category_id=:categoryId")
+    suspend fun getProducts(categoryId: Int): List<DatabaseProduct>
 
-    @Query("DELETE FROM Products")
+    @Query("SELECT * FROM products WHERE id=:ProductId")
+    suspend fun getProduct(ProductId: Long): DatabaseProduct
+
+    @Query("DELETE FROM products")
     fun deleteAll()
 
-    @Query("DELETE FROM Products WHERE category_id=:categoryId")
-    fun deleteOfCategory(categoryId: Int)
+    @Query("SELECT * FROM products")
+    fun getAll(): List<DatabaseProduct>
 
-    @Query("SELECT * FROM Products WHERE recent=1")
+    @Query("SELECT * FROM products ORDER BY datetime(recent) DESC LIMIT 5")
     fun getRecents(): LiveData<List<DatabaseProduct>>
+
+    @Transaction
+    @Query("SELECT * FROM products JOIN cart on products.id=cart.product_id")
+    fun getDomainCartItems(): LiveData<List<DomainCartItem>>
 }
