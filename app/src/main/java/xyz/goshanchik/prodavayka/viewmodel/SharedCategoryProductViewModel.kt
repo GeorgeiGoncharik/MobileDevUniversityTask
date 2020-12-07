@@ -14,16 +14,12 @@ import xyz.goshanchik.prodavayka.data.domain.Category
 import xyz.goshanchik.prodavayka.data.domain.Product
 import xyz.goshanchik.prodavayka.util.NetManager
 import xyz.goshanchik.prodavayka.workers.OfferWorker
-import java.time.Duration
-import java.time.LocalDateTime
 
 
 class SharedCategoryProductViewModel(private val categoryId: Int, private val productId: Long, application: Application) : AndroidViewModel(
     application
 ) {
     private val repository = Repository(CommerceRoomDatabase.getDatabase(application), NetManager(application))
-
-    val outputWorkInfos: LiveData<List<WorkInfo>>
 
     init {
         refreshDataFromRepository()
@@ -44,29 +40,14 @@ class SharedCategoryProductViewModel(private val categoryId: Int, private val pr
         get() = _navigateDetailPage
 
     init {
-        if(productId == -1L){
-            val request = getOfferWorkRequest()
-            workManager.enqueue(request)
-            Timber.d("work has been enqueued1.")
-        }
-        else{
-            onNavigateToProductItemDetail(productId)
-        }
-        outputWorkInfos = workManager.getWorkInfosByTagLiveData(WORK_OFFER_TAG)
+        val request = getOfferWorkRequest()
+        workManager.enqueue(request)
+        Timber.d("work has been enqueued1.")
     }
-
-//    private fun getOfferWorkRequest(): WorkRequest = PeriodicWorkRequestBuilder<OfferWorker>(Duration.ofMinutes(10))
-//            .addTag(WORK_OFFER_TAG)
-//            .setConstraints(Constraints.Builder()
-//                .setRequiresBatteryNotLow(true)
-//                .setRequiredNetworkType(NetworkType.CONNECTED)
-//                .build())
-//            .build()
 
     private fun getOfferWorkRequest(): WorkRequest = OneTimeWorkRequestBuilder<OfferWorker>()
         .addTag(WORK_OFFER_TAG)
         .setConstraints(Constraints.Builder()
-//            .setRequiresBatteryNotLow(true)
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build())
         .build()

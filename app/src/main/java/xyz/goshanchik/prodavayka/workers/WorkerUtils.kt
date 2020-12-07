@@ -2,9 +2,7 @@ package xyz.goshanchik.prodavayka.workers
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -13,7 +11,7 @@ import xyz.goshanchik.prodavayka.*
 
 
 fun makeStatusNotification(message: String, context: Context): NotificationManager? {
-
+    Timber.d("makeStatusNotification")
     val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     // Make a channel if necessary
@@ -27,10 +25,7 @@ fun makeStatusNotification(message: String, context: Context): NotificationManag
         channel.description = description
 
         // Add the channel
-        notificationManager.let{
-            Timber.d("notificationManager in inited.")
-            it.createNotificationChannel(channel)
-        }
+        notificationManager.createNotificationChannel(channel)
     }
 
     // Create the notification
@@ -43,6 +38,8 @@ fun makeStatusNotification(message: String, context: Context): NotificationManag
 
     // Show the notification
     NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build())
+
+    notificationManager.notify(NOTIFICATION_ID, builder.build())
 
     return notificationManager
 }
