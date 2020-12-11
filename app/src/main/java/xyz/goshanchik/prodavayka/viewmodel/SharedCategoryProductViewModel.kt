@@ -14,6 +14,7 @@ import xyz.goshanchik.prodavayka.data.domain.Category
 import xyz.goshanchik.prodavayka.data.domain.Product
 import xyz.goshanchik.prodavayka.util.NetManager
 import xyz.goshanchik.prodavayka.workers.OfferWorker
+import java.util.concurrent.TimeUnit
 
 
 class SharedCategoryProductViewModel(private val categoryId: Int, private val productId: Long, application: Application) : AndroidViewModel(
@@ -45,10 +46,12 @@ class SharedCategoryProductViewModel(private val categoryId: Int, private val pr
         Timber.d("work has been enqueued1.")
     }
 
-    private fun getOfferWorkRequest(): WorkRequest = OneTimeWorkRequestBuilder<OfferWorker>()
+    private fun getOfferWorkRequest(): WorkRequest = PeriodicWorkRequestBuilder<OfferWorker>(10, TimeUnit.HOURS)
+        .setInitialDelay(5, TimeUnit.MINUTES)
         .addTag(WORK_OFFER_TAG)
         .setConstraints(Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresBatteryNotLow(true)
             .build())
         .build()
 

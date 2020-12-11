@@ -151,19 +151,6 @@ class CategoryFragment : Fragment() {
                 sharedViewModel.resetShowSnackBar()
             }
         }
-
-//        sharedViewModel.outputWorkInfos.observe(viewLifecycleOwner){
-//            it?.let {
-//                val workInfo = it.first()
-//                if(workInfo.state.isFinished){
-//                    val output = workInfo.outputData.getLong(WORK_OFFER_OUTPUT, WORK_OFFER_EMPTY_OUTPUT)
-//                    if(output != WORK_OFFER_EMPTY_OUTPUT){
-//                        sharedViewModel.onNavigateToProductItemDetail(output)
-//                    }
-//                }
-//            }
-//        }
-
         return binding.root
     }
 
